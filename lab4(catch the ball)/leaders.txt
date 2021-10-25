@@ -1,0 +1,4 @@
+Boy: 25
+man: 73
+man: 73
+Boychik: 50
