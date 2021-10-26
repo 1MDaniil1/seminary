@@ -32,6 +32,7 @@ class image():
         self.r = r
 
     def move(self):
+        """Движение смайлика"""
         if self.Vx == 0:
             self.Vx += 2
         if self.Vy == 0:
@@ -53,6 +54,7 @@ class image():
             self.score3 = 0
 
     def check(self):
+        """Проверка га попадание курсором в область смайлика(добавление нового)"""
         if (self.x - event.pos[0]) ** 2 + (self.y - event.pos[1]) ** 2 <= (self.r) ** 2:
             circle(screen, (0, 0, 0), (self.x, self.y), self.r)
             self.score1 += 1
@@ -76,6 +78,7 @@ class Ball():
         self.score = score
 
     def move(self):
+        """Движение шарика"""
         if self.Vx == 0:
             self.Vx += 2
         if self.Vy == 0:
@@ -90,6 +93,7 @@ class Ball():
         circle(screen, self.colour, (self.x, self.y), self.r)
 
     def check(self):
+        """Проверка га попадание курсором в область шарика(добавление нового)"""
         if (self.x - event.pos[0]) ** 2 + (self.y - event.pos[1]) ** 2 <= (self.r) ** 2:
             circle(screen, (0, 0, 0), (self.x, self.y), self.r)
             self.score += 1
@@ -106,6 +110,7 @@ class Ball():
 
 
 def click(event):
+    """Проверка на попадание+замена старого шарика на новый"""
     count = len(balls)
     for ball in balls:
         ball.check()
