@@ -54,7 +54,7 @@ class image():
             self.score3 = 0
 
     def check(self):
-        """Проверка га попадание курсором в область смайлика(добавление нового)"""
+        """Проверка на попадание курсором в область смайлика(добавление нового)"""
         if (self.x - event.pos[0]) ** 2 + (self.y - event.pos[1]) ** 2 <= (self.r) ** 2:
             circle(screen, (0, 0, 0), (self.x, self.y), self.r)
             self.score1 += 1
@@ -93,7 +93,7 @@ class Ball():
         circle(screen, self.colour, (self.x, self.y), self.r)
 
     def check(self):
-        """Проверка га попадание курсором в область шарика(добавление нового)"""
+        """Проверка на попадание курсором в область шарика(добавление нового)"""
         if (self.x - event.pos[0]) ** 2 + (self.y - event.pos[1]) ** 2 <= (self.r) ** 2:
             circle(screen, (0, 0, 0), (self.x, self.y), self.r)
             self.score += 1
