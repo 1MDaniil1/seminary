@@ -18,6 +18,8 @@ BLACK = (0, 0, 0)
 COLORS = [RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN]
 
 
+balls=[]
+
 class image():
     def __init__(self, r, x, y, Vx, Vy, score1, score2, score3):
         self.x = x
@@ -82,7 +84,7 @@ class Ball():
             self.Vx = -self.Vx
         if self.y + self.r >= 700 or self.y - self.r <= 0:
             self.Vy = -self.Vy
-        circle(screen, (0, 0, 0), (self.x, self.y), self.r)
+        circle(screen, (0, 0, 0), (self.x+self.Vx, self.y+self.Vy), self.r)
         self.x += self.Vx
         self.y += self.Vy
         circle(screen, self.colour, (self.x, self.y), self.r)
@@ -116,7 +118,7 @@ pygame.display.update()
 clock = pygame.time.Clock()
 finished = False
 
-balls = []
+
 
 for i in range(5):
     ball = Ball(randint(30, 50), COLORS[randint(0, 5)], randint(100, 1100), randint(100, 600), randint(-5, 5),
