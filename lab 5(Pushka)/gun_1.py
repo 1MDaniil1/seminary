@@ -4,7 +4,7 @@ import random
 import pygame
 
 
-FPS = 30
+FPS = 80
 
 RED = 0xFF0000
 BLUE = 0x0000FF
@@ -55,7 +55,7 @@ class Ball:
         if abs(self.vx -self.vy*0.01
                *self.vx)<=abs(self.vx):
             self.vx -=  0.01 * self.vx
-        if self.x >= WIDTH - self.r:
+        if self.x >= WIDTH - self.r-5:
             self.vx *= -1
         if self.y >= HEIGHT * 5 / 6+100 - self.r or self.y<=0:
             self.vy *= -1
@@ -78,6 +78,7 @@ class Ball:
         """
         if (self.x - obj.x) ** 2 + (self.y - obj.y) ** 2 <= (self.r + obj.r) ** 2:
             return True
+            sum += 1
         return False
 
 
@@ -143,6 +144,8 @@ class Gun:
             self.color = GREY
 
 
+
+
 class Target:
     # FIXME: don't work!!! How to call this functions when object is created?
     # self.new_target()
@@ -157,8 +160,9 @@ class Target:
         """ Инициализация новой цели. """
         x = self.x = random.randint(600, 750)
         y = self.y = random.randint(200, 450)
-        r = self.r = random.randint(2, 50)
+        r = self.r = random.randint(20, 50)
         color = self.color = RED
+
 
     def hit(self, points=1):
         """Попадание шарика в цель."""
@@ -179,6 +183,18 @@ class Target:
             self.vx *= -1
         if self.y >= HEIGHT - self.r or self.y <= self.r:
             self.vy *= -1
+        if target1.r+target2.r-5<=math.sqrt(((target1.x-target2.x)**2)+((target1.y-target2.y)**2))<=target1.r+target2.r:
+            if (target1.vx>0 and target2.vx<0) or (target1.vx<0 and target2.vx>0):
+                #self.vx*=-1
+                target1.vx*= -1
+                target2.vx *= -1
+            if (target1.vy > 0 and target2.vy < 0) or (target1.vy < 0 and target2.vy > 0):
+                #self.vy*=-1
+                target1.vy *= -1
+                target2.vy *= -1
+
+
+
 
 
 pygame.init()
@@ -196,16 +212,30 @@ finished = False
 
 FONT = pygame.font.Font(None, 50)
 
+
+sum=0
+time = 0
+
 while not finished:
+    clock.tick(FPS)
+    time += 2 / FPS
+    if time >= 20:
+        finished = True
+
     screen.fill(WHITE)
     gun.draw()
     target1.draw()
     target2.draw()
+
     for b in balls:
         b.draw()
 
+    sum=target1.points + target2.points
+
     score_display = FONT.render(str(target1.points + target2.points), True, (0, 0, 0))
     screen.blit(score_display, (10, 10))
+    time_display = FONT.render(str(20 - math.floor(time)), True, (0, 0, 0))
+    screen.blit(time_display, (50, 10))
     pygame.display.update()
 
     clock.tick(FPS)
@@ -220,6 +250,7 @@ while not finished:
             gun.targetting(event)
     target1.move()
     target2.move()
+
     for b in balls:
         b.move()
         for target in target1, target2:
@@ -230,3 +261,47 @@ while not finished:
     gun.power_up()
 
 pygame.quit()
+
+
+
+
+
+
+gamer = str(input("Name: "))
+
+gamers = []
+scores = []
+gamers_to_delete = []
+
+file = open('1.txt', 'r')
+
+for line in file.readlines():
+    n = line.find(':') + 2
+    gamers += [line[:n-2]]
+    scores += [line[n:][:-1]]
+
+file.close()
+
+for i in range(len(gamers)):
+    for j in range(i + 1, len(gamers)):
+        if i != j and gamers[i] == gamers[j]:
+            scores[i] = str(max(int(scores[i]), int(scores[j])))
+            gamers_to_delete += [j]
+
+for i in gamers_to_delete:
+    gamers.pop(i)
+    scores.pop(i)
+    for j in range(len(gamers_to_delete)):
+        gamers_to_delete[j] -= 1
+
+for i in range(len(gamers)):
+    if int(sum) >= int(scores[i]):
+        gamers = gamers[:i+1] + [gamer] + gamers[i+1:]
+        scores = scores[:i+1] + [sum] + scores[i+1:]
+
+file = open('1.txt', 'w')
+
+for i in range(len(gamers)):
+    file.write(str(gamers[i]) + ": " + str(scores[i]) + '\n')
+
+file.close()
