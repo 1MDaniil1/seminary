@@ -57,7 +57,7 @@ class Ball:
             self.vx -=  0.01 * self.vx
         if self.x >= WIDTH - self.r-5:
             self.vx *= -1
-        if self.y >= HEIGHT * 5 / 6+100 - self.r or self.y<=0:
+        if self.y >= HEIGHT * 5 / 6+100-5 - self.r or self.y<=5:
             self.vy *= -1
 
     def draw(self):
@@ -179,14 +179,14 @@ class Target:
     def move(self):
         self.x += self.vx
         self.y += self.vy
-        if self.x >= WIDTH - self.r or self.x <= self.r:
+        if self.x >= WIDTH - self.r-5 or self.x <= self.r+5:
             self.vx *= -1
-        if self.y >= HEIGHT - self.r or self.y <= self.r:
+        if self.y >= HEIGHT - self.r or self.y <= self.r+5:
             self.vy *= -1
 
 
     def check(self):
-        if target1.r+target2.r-1<=math.sqrt(((target1.x-target2.x)**2)+((target1.y-target2.y)**2))<=target1.r+target2.r:
+        if (target1.r+target2.r-1)<=math.sqrt(((target1.x-target2.x)**2)+((target1.y-target2.y)**2))<=target1.r+target2.r:
             if (target1.vx<0 and (target2.vx)>0) or (target1.vx>0 and (target2.vx)<0):
                 target1.vx *= -1
                 target2.vx *= -1
