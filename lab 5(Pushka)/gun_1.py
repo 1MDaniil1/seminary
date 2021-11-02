@@ -4,7 +4,7 @@ import random
 import pygame
 
 
-FPS = 80
+FPS = 100
 
 RED = 0xFF0000
 BLUE = 0x0000FF
@@ -183,16 +183,32 @@ class Target:
             self.vx *= -1
         if self.y >= HEIGHT - self.r or self.y <= self.r:
             self.vy *= -1
-        if target1.r+target2.r-5<=math.sqrt(((target1.x-target2.x)**2)+((target1.y-target2.y)**2))<=target1.r+target2.r:
-            if (target1.vx>0 and target2.vx<0) or (target1.vx<0 and target2.vx>0):
-                #self.vx*=-1
-                target1.vx*= -1
+
+
+    def check(self):
+        if target1.r+target2.r-1<=math.sqrt(((target1.x-target2.x)**2)+((target1.y-target2.y)**2))<=target1.r+target2.r:
+            if (target1.vx<0 and (target2.vx)>0) or (target1.vx>0 and (target2.vx)<0):
+                target1.vx *= -1
                 target2.vx *= -1
-            if (target1.vy > 0 and target2.vy < 0) or (target1.vy < 0 and target2.vy > 0):
-                #self.vy*=-1
+            elif abs(target1.vx)>abs(target2.vx) and (target1.x-target2.x)*(target1.vx-target2.vy)>0:
+               target1.vx *= 1.5
+               target2.vx *= 0.8
+            elif abs(target1.vx)<abs(target2.vx) and (target1.x - target2.x) * (target1.vx - target2.vy) < 0:
+                target2.vx *= 1.5
+                target1.vx *= 0.8
+
+
+
+            if (target1.vy<0 and (target2.vy)>0) or (target1.vy>0 and (target2.vy)<0):
                 target1.vy *= -1
                 target2.vy *= -1
 
+            elif target1.vy*target2.vy>0 and abs(target1.vy)>abs(target2.vy) and (target1.y-target2.y)*(target1.vy-target2.vy)>0:
+                target1.vy *= 1.5
+                target2.vy *= 0.8
+            elif target1.vy * target2.vy < 0 and abs(target1.vy)<abs(target2.vy) and (target1.y - target2.y) * (target1.vy - target2.vy) < 0:
+                target2.vy *= 1.5
+                target1.vy *= 0.8
 
 
 
@@ -248,8 +264,11 @@ while not finished:
             gun.fire2_end(event)
         elif event.type == pygame.MOUSEMOTION:
             gun.targetting(event)
+    target1.check()
     target1.move()
     target2.move()
+    for i in target1, target2:
+        i.check()
 
     for b in balls:
         b.move()
