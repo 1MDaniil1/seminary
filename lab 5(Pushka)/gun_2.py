@@ -177,116 +177,6 @@ class Ball:
         else:
             return False
 
-class Gun1:
-    def __init__(self, screen):
-        self.screen = screen
-        self.f2_power = 10
-        self.f2_on = 0
-        self.angle = 1
-        self.color = GREY
-        self.x = WIDTH / 2
-        self.y = 390
-        self.v = 3
-        self.r = 60
-        self.go = 0
-
-    def targetting(self, event):
-        """Прицеливание. Зависит от положения мыши."""
-        if event.pos[0] - self.x > 0:
-            self.angle = math.atan((self.y - event.pos[1]) / (event.pos[0] - self.x))
-        elif event.pos[0] - self.x < 0:
-            self.angle = math.pi + math.atan((self.y - event.pos[1]) / (event.pos[0] - self.x))
-        else:
-            if self.y - event.pos[1] >= 0:
-                self.angle = math.pi / 2
-            else:
-                self.angle = - math.pi / 2
-        if self.f2_on:
-            self.color = RED
-        else:
-            self.color = GREY
-
-    def move_start(self, event):
-        if event.key == pygame.K_LEFT:
-            self.go = -1
-        if event.key == pygame.K_RIGHT:
-            self.go = 1
-
-    def move(self, keys):
-        if keys[pygame.K_LEFT]:
-            self.go = -1
-        if keys[pygame.K_RIGHT]:
-            self.go = 1
-        self.x += self.go * self.v
-
-    def move_end(self, event):
-        if (event.key == pygame.K_LEFT) or (event.key == pygame.K_RIGHT):
-            self.go = 0
-
-    def draw(self):
-        circle(self.screen, GREEN, (self.x, self.y + 40 + HEIGHT - 600), self.r)
-        circle(self.screen, BLACK, (self.x, self.y + 40 + HEIGHT - 600), self.r, 1)
-        rect(self.screen, GREEN, (self.x - 70, self.y + 40 + HEIGHT - 600, 140, self.r))
-        rect(self.screen, BLACK, (self.x - 70, self.y + 40 + HEIGHT - 600, 140, self.r), 1)
-        circle(self.screen, (190, 190, 190), (self.x - 50, self.y + 80 + HEIGHT - 600), 30)
-        circle(self.screen, BLACK, (self.x - 50, self.y + 80 + HEIGHT - 600), 30, 1)
-        circle(self.screen, (190, 190, 190), (self.x + 50, self.y + 80 + HEIGHT - 600), 30)
-        circle(self.screen, BLACK, (self.x + 50, self.y + 80 + HEIGHT - 600), 30, 1)
-        polygon(self.screen, self.color, [(self.x, self.y + HEIGHT - 600), (
-        self.x + self.f2_power * math.cos(self.angle), self.y - self.f2_power * math.sin(self.angle) + HEIGHT - 600),
-                                          (self.x + self.f2_power * math.cos(self.angle) - 5 * math.sin(self.angle),
-                                           self.y + HEIGHT - 600 - self.f2_power * math.sin(self.angle) - 5 * math.cos(
-                                               self.angle)),
-                                          (self.x - 5 * math.sin(self.angle),
-                                           self.y - 5 * math.cos(self.angle) + HEIGHT - 600),
-                                          (self.x, self.y + HEIGHT - 600)])
-        polygon(self.screen, BLACK, [(self.x, self.y + HEIGHT - 600), (
-        self.x + self.f2_power * math.cos(self.angle), self.y - self.f2_power * math.sin(self.angle) + HEIGHT - 600),
-                                     (self.x + self.f2_power * math.cos(self.angle) - 5 * math.sin(self.angle),
-                                      self.y + HEIGHT - 600 - self.f2_power * math.sin(self.angle) - 5 * math.cos(
-                                          self.angle)),
-                                     (self.x - 5 * math.sin(self.angle),
-                                      self.y - 5 * math.cos(self.angle) + HEIGHT - 600),
-                                     (self.x, self.y + HEIGHT - 600)], 2)
-
-    def fire1_start(self, event):
-        self.f2_on = 1
-
-    def power_up(self):
-        if self.f2_on:
-            if self.f2_power < 100:
-                self.f2_power += 1
-            self.color = RED
-        else:
-            self.color = GREY
-
-    def fire1_end(self, event):
-        """Выстрел мячом.
-
-        Происходит при отпускании кнопки мыши.
-        Начальные значения компонент скорости мяча vx и vy зависят от положения мыши.
-        """
-        global balls, bullet
-        bullet += 1
-        new_ball = Ball(self.screen)
-        new_ball.x = self.x
-        new_ball.y = self.y + HEIGHT - 600
-        new_ball.vx = self.f2_power * math.cos(self.angle) * 4
-        new_ball.vy = - self.f2_power * math.sin(self.angle) * 4
-        balls.append(new_ball)
-        self.f2_on = 0
-        self.f2_power = 10
-
-    def fire2_end(self, event):
-        new_triangle = Triangle(self.screen)
-        new_triangle.x = self.x
-        new_triangle.y = self.y + HEIGHT - 600
-        new_triangle.vx = self.f2_power * math.cos(self.angle) * 4
-        new_triangle.vy = - self.f2_power * math.sin(self.angle) * 4
-        triangls.append(new_triangle)
-        self.f2_on = 0
-        self.f2_power = 10
-
 class Gun:
     def __init__(self, screen):
         self.screen = screen
@@ -396,6 +286,7 @@ class Gun:
         triangls.append(new_triangle)
         self.f2_on = 0
         self.f2_power = 10
+
 
 
 class Helicopter:
@@ -613,7 +504,6 @@ points = 0
 clock = pygame.time.Clock()
 
 gun = Gun(screen)
-gun1 = Gun1(screen)
 
 #airship = Airship(screen)
 
@@ -659,12 +549,9 @@ while not finished:
                       (100, 0, 0))
     screen.blit(text3, (15, 5))
 
-    text4 = f4.render('Здоровье аэростата', True,
-                      (100, 0, 0))
-    screen.blit(text4, (WIDTH - 290, 5))
+
 
     gun.draw()
-    gun1.draw()
 
   #  airship.move()
    # airship.draw()
