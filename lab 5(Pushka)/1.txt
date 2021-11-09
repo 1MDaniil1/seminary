@@ -1,6 +1,6 @@
 fhfnhhf: 2
-player4: 2
-player4: 2
-player4: 2
+player1: 14
+player1: 14
+player1: 14
 player1: 3
 : 

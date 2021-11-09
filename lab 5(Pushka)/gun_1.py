@@ -49,8 +49,8 @@ class Ball:
         self.x += self.vx
         self.y -= self.vy
         self.vy -= 1
-        if abs(self.vy -self.vy*0.05*self.vy)<=abs(self.vy):
-            self.vy-=0.05 * self.vy
+        if abs(self.vy -self.vy*0.1*self.vy)<=abs(self.vy):
+            self.vy-=0.1 * self.vy
 
         if abs(self.vx -self.vy*0.01
                *self.vx)<=abs(self.vx):
